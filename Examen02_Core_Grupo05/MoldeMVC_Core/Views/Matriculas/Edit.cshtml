@@ -1,0 +1,40 @@
+﻿@model MoldeMVC_Core.Models.Matricula
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Matricula</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RegistroId" />
+            <div class="form-group">
+                <label asp-for="Nrc" class="control-label"></label>
+                <select asp-for="Nrc" class="form-control" asp-items="ViewBag.Nrc"></select>
+                <span asp-validation-for="Nrc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EstudianteId" class="control-label"></label>
+                <select asp-for="EstudianteId" class="form-control" asp-items="ViewBag.EstudianteId"></select>
+                <span asp-validation-for="EstudianteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

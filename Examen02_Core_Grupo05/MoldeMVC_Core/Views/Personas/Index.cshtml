@@ -1,0 +1,60 @@
+﻿@model IEnumerable<MoldeMVC_Core.Models.Persona>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CedulaPersona)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombrePersona)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApellidoPersona)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Foto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RolPersona)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CedulaPersona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombrePersona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApellidoPersona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Foto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RolPersona.RolPersonaId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PersonalId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.PersonalId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.PersonalId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
