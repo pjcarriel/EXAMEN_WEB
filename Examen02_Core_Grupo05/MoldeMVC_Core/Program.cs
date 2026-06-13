@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MoldeMVC_Core.Data;
+using MoldeMVC_Core.Roles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +27,25 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 
     // Configuramos la validaci�n de correo
     options.User.RequireUniqueEmail = false;
-}).AddEntityFrameworkStores<ApplicationDbContext>();
+})
+    //Soporte para roles
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 builder.Services.AddControllersWithViews();
+
+// ********************************************** Crea la pol�tica *******************************************
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SoloUsuariosAdmins", policy =>
+        policy.RequireAssertion(context =>
+            context.User.Identity != null &&
+            (context.User.Identity.Name == "Administrador"
+             || context.User.Identity.Name == "SuperAdmin")
+        ));
+});
+//************************************************************************************************************
 
 var app = builder.Build();
 
@@ -50,6 +66,12 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Inicializar Roles y Usuarios
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RolesUsuarios.InitializeRoles(services);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
