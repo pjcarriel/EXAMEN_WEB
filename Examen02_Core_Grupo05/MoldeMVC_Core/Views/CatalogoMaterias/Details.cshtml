@@ -1,43 +1,29 @@
-﻿@model MoldeMVC_Core.Models.CatalogoMateria
+@model MoldeMVC_Core.Models.CatalogoMateria
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle Materia";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Detalle Materia</h1>
 
 <div>
-    <h4>CatalogoMateria</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NombreMateria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NombreMateria)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Carrera)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Carrera.CarreraId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Departamento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Departamento.DepartamentoId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nivel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nivel.NivelId)
-        </dd>
+        <dt class="col-sm-2">Nombre Materia</dt>
+        <dd class="col-sm-10">@Model?.NombreMateria</dd>
+
+        <dt class="col-sm-2">Carrera</dt>
+        <dd class="col-sm-10">@Model?.Carrera?.NombreCarrera</dd>
+
+        <dt class="col-sm-2">Departamento</dt>
+        <dd class="col-sm-10">@Model?.Departamento?.NombreDepartamento</dd>
+
+        <dt class="col-sm-2">Nivel</dt>
+        <dd class="col-sm-10">@Model?.Nivel?.NivelDescrip</dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.MateriaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.MateriaId">Editar</a> |
+    <a asp-action="Index">Volver</a>
 </div>

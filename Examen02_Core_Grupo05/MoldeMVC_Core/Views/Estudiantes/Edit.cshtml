@@ -11,21 +11,21 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" asp-route-id="@Model.EstudianteId" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="EstudianteId" />
             <div class="form-group">
-                <label asp-for="PersonalId" class="control-label"></label>
+                <label class="control-label">Persona</label>
                 <select asp-for="PersonalId" class="form-control" asp-items="ViewBag.PersonalId"></select>
                 <span asp-validation-for="PersonalId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CarreraId" class="control-label"></label>
+                <label class="control-label">Carrera</label>
                 <select asp-for="CarreraId" class="form-control" asp-items="ViewBag.CarreraId"></select>
                 <span asp-validation-for="CarreraId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NivelActualEst" class="control-label"></label>
+                <label class="control-label">Nivel Actual</label>
                 <select asp-for="NivelActualEst" class="form-control" asp-items="ViewBag.NivelActualEst"></select>
                 <span asp-validation-for="NivelActualEst" class="text-danger"></span>
             </div>

@@ -11,18 +11,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="PersonalId" class="control-label"></label>
+                <label class="control-label">Persona</label>
                 <select asp-for="PersonalId" class ="form-control" asp-items="ViewBag.PersonalId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="CarreraId" class="control-label"></label>
+                <label class="control-label">Carrera</label>
                 <select asp-for="CarreraId" class ="form-control" asp-items="ViewBag.CarreraId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="NivelActualEst" class="control-label"></label>
+                <label class="control-label">Nivel Actual</label>
                 <select asp-for="NivelActualEst" class ="form-control" asp-items="ViewBag.NivelActualEst"></select>
             </div>
             <div class="form-group">

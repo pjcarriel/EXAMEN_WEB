@@ -1,37 +1,26 @@
-﻿@model MoldeMVC_Core.Models.Profesor
+@model MoldeMVC_Core.Models.Profesor
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle Profesor";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Detalle Profesor</h1>
 
 <div>
-    <h4>Profesor</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SueldoProfesor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SueldoProfesor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Departamento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Departamento.DepartamentoId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Personal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Personal.PersonalId)
-        </dd>
+        <dt class="col-sm-2">Nombre</dt>
+        <dd class="col-sm-10">@Model?.Personal?.NombrePersona @Model?.Personal?.ApellidoPersona</dd>
+
+        <dt class="col-sm-2">Departamento</dt>
+        <dd class="col-sm-10">@Model?.Departamento?.NombreDepartamento</dd>
+
+        <dt class="col-sm-2">Sueldo</dt>
+        <dd class="col-sm-10">@Model?.SueldoProfesor</dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProfesorId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.ProfesorId">Editar</a> |
+    <a asp-action="Index">Volver</a>
 </div>

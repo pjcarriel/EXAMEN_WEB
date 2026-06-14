@@ -1,31 +1,29 @@
-﻿@model MoldeMVC_Core.Models.NrcMaterium
+@model MoldeMVC_Core.Models.NrcMaterium
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle NRC";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Detalle NRC</h1>
 
 <div>
-    <h4>NrcMaterium</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Materia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Materia.MateriaId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Profesor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Profesor.ProfesorId)
-        </dd>
+        <dt class="col-sm-2">NRC</dt>
+        <dd class="col-sm-10">@Model?.Nrc</dd>
+
+        <dt class="col-sm-2">Materia</dt>
+        <dd class="col-sm-10">@Model?.Materia?.NombreMateria</dd>
+
+        <dt class="col-sm-2">Profesor</dt>
+        <dd class="col-sm-10">@Model?.Profesor?.Personal?.NombrePersona @Model?.Profesor?.Personal?.ApellidoPersona</dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Nrc">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (User.IsInRole("PLANIFICADOR"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Nrc">Editar</a> <span>|</span>
+    }
+    <a asp-action="Index">Volver</a>
 </div>

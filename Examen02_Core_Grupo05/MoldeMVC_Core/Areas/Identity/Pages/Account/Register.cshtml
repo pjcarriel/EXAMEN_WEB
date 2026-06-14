@@ -1,74 +1,160 @@
-﻿@page
+@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Registro";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+            <h2>Crear nueva cuenta</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            @*Nuevo campo para el usuario*@
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="name" />
+            @* Cédula con botón COMPROBAR *@
+            <div class="form-group mb-3">
+                <label asp-for="Input.Cedula">Cédula</label>
+                <div class="input-group">
+                    <input asp-for="Input.Cedula" class="form-control" id="cedula" maxlength="10" placeholder="Ingrese su cédula" />
+                    <button type="button" class="btn btn-secondary" onclick="comprobarCedula()">COMPROBAR</button>
+                </div>
+                <span asp-validation-for="Input.Cedula" class="text-danger"></span>
+                <span id="msg-cedula"></span>
+            </div>
+
+            @* Nombre de usuario *@
+            <div class="form-group mb-3">
                 <label asp-for="Input.UserName">Nombre de usuario</label>
+                <input asp-for="Input.UserName" class="form-control" autocomplete="username" placeholder="Usuario" />
                 <span asp-validation-for="Input.UserName" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+
+            @* Email *@
+            <div class="form-group mb-3">
                 <label asp-for="Input.Email">Email</label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="correo@ejemplo.com" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
+
+            @* Password *@
+            <div class="form-group mb-3">
+                <label asp-for="Input.Password">Contraseña</label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Contraseña" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+
+            @* Confirmar Password *@
+            <div class="form-group mb-3">
+                <label asp-for="Input.ConfirmPassword">Confirmar contraseña</label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Repetir contraseña" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+
+            @* Rol *@
+            <div class="form-group mb-3">
+                <label asp-for="Input.RolSeleccionado">Rol</label>
+                <select asp-for="Input.RolSeleccionado" class="form-control" id="selectRol" onchange="mostrarCombosDepto()">
+                    <option value="">-- Seleccione un rol --</option>
+                    <option value="ESTUDIANTE">ESTUDIANTE</option>
+                    <option value="PROFESOR">PROFESOR</option>
+                    <option value="DECANO">DECANO</option>
+                    <option value="PLANIFICADOR">PLANIFICADOR</option>
+                </select>
+                <span asp-validation-for="Input.RolSeleccionado" class="text-danger"></span>
+            </div>
+
+            @* Combo Departamento (solo DECANO/PLANIFICADOR) *@
+            <div id="divDepto" style="display:none" class="form-group mb-3">
+                <label>Departamento</label>
+                <select asp-for="Input.DepartamentoId" class="form-control" id="selectDepto" onchange="cargarCarreras()">
+                    <option value="">-- Seleccione departamento --</option>
+                    @if (ViewData["Departamentos"] != null)
+                    {
+                        foreach (var d in (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["Departamentos"])
+                        {
+                            <option value="@d.Value">@d.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            @* Combo Carrera (cargado por AJAX) *@
+            <div id="divCarrera" style="display:none" class="form-group mb-3">
+                <label>Carrera</label>
+                <select asp-for="Input.CarreraId" class="form-control" id="selectCarrera">
+                    <option value="">-- Seleccione carrera --</option>
+                </select>
+            </div>
+
+            <button id="btn-registrar" type="submit" class="w-100 btn btn-lg btn-primary" disabled>Registrar</button>
         </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function comprobarCedula() {
+            var cedula = document.getElementById('cedula').value;
+            var msg = document.getElementById('msg-cedula');
+            if (validarCedula(cedula)) {
+                msg.innerHTML = '<span class="text-success"><strong>&#10003; Cédula válida</strong></span>';
+                document.getElementById('btn-registrar').disabled = false;
+            } else {
+                msg.innerHTML = '<span class="text-danger"><strong>&#10007; Cédula inválida</strong></span>';
+                document.getElementById('btn-registrar').disabled = true;
+            }
+        }
+
+        function validarCedula(cedula) {
+            if (cedula.length !== 10 || isNaN(cedula)) return false;
+            var provincia = parseInt(cedula.substring(0, 2));
+            if (provincia < 1 || provincia > 24) return false;
+            if (parseInt(cedula[2]) >= 6) return false;
+            var coef = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+            var suma = 0;
+            for (var i = 0; i < 9; i++) {
+                var val = parseInt(cedula[i]) * coef[i];
+                if (val >= 10) val -= 9;
+                suma += val;
+            }
+            var verificador = (10 - (suma % 10)) % 10;
+            return verificador === parseInt(cedula[9]);
+        }
+
+        function mostrarCombosDepto() {
+            var rol = document.getElementById('selectRol').value;
+            var mostrarDepto = (rol === 'DECANO' || rol === 'PLANIFICADOR' || rol === 'PROFESOR');
+            document.getElementById('divDepto').style.display = mostrarDepto ? 'block' : 'none';
+            document.getElementById('divCarrera').style.display = 'none';
+            document.getElementById('selectCarrera').innerHTML = '<option value="">-- Seleccione carrera --</option>';
+        }
+
+        function cargarCarreras() {
+            var deptoId = document.getElementById('selectDepto').value;
+            if (!deptoId) return;
+            fetch('/Carreras/GetCarrerasByDepartamento?departamentoId=' + deptoId)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var sel = document.getElementById('selectCarrera');
+                    sel.innerHTML = '<option value="">-- Seleccione carrera --</option>';
+                    data.forEach(function (c) {
+                        sel.innerHTML += '<option value="' + c.carreraId + '">' + c.nombreCarrera + '</option>';
+                    });
+                    document.getElementById('divCarrera').style.display = 'block';
+                });
+        }
+
+        // Si la cédula ya tiene valor (por ejemplo, tras un error del servidor), re-habilitar el botón
+        window.addEventListener('load', function () {
+            var cedula = document.getElementById('cedula').value;
+            if (cedula && cedula.length === 10) {
+                document.getElementById('btn-registrar').disabled = false;
+            }
+            // Re-mostrar combos de departamento si el rol fue seleccionado
+            mostrarCombosDepto();
+        });
+    </script>
 }

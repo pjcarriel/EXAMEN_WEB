@@ -1,0 +1,42 @@
+@model IEnumerable<string>
+
+@{
+    ViewData["Title"] = "Gestión de Permisos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center mt-3">Gestión de Permisos</h2>
+<p class="text-center text-muted">Administra los accesos del sistema para cada tipo de usuario</p>
+
+<div class="container mt-4">
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert alert-success">@TempData["Exito"]</div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <strong>&#128100; Módulo</strong>
+            <span class="float-end"><strong>Acciones</strong></span>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <tbody>
+                    @foreach (var rol in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 align-middle">@rol</td>
+                            <td class="text-end pe-3">
+                                <a asp-action="Configurar" asp-route-rolNombre="@rol"
+                                   class="btn btn-sm btn-outline-primary">Gestionar Permisos</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-center text-muted small">
+            Sistema de Control de Acceso por Rol
+        </div>
+    </div>
+</div>

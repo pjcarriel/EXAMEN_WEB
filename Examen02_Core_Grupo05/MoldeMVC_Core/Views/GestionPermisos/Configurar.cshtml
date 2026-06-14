@@ -1,0 +1,100 @@
+@model List<MoldeMVC_Core.Models.PermisoRol>
+
+@{
+    ViewData["Title"] = "Configurar Permisos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var rolNombre = ViewData["RolNombre"]?.ToString();
+}
+
+<h2 class="text-center mt-3">Gestión de Permisos</h2>
+<p class="text-center text-muted">Configura los accesos del sistema clínico</p>
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <strong>@rolNombre</strong>
+        </div>
+        <form asp-action="Configurar" method="post">
+            <div class="card-body">
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-start">Módulo</th>
+                            <th>&#128065; Ver</th>
+                            <th>&#43; Crear</th>
+                            <th>&#9998; Actualizar</th>
+                            <th>&#128465; Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <tr>
+                                <input type="hidden" name="permisos[@i].Id" value="@Model[i].Id" />
+                                <input type="hidden" name="permisos[@i].RolNombre" value="@Model[i].RolNombre" />
+                                <input type="hidden" name="permisos[@i].Modulo" value="@Model[i].Modulo" />
+                                <td class="text-start ps-3">@Model[i].Modulo</td>
+                                <td>
+                                    <input type="checkbox" name="permisos[@i].PuedeVer" value="true"
+                                        @(Model[i].PuedeVer ? "checked" : "")
+                                        class="form-check-input" />
+                                    <input type="hidden" name="permisos[@i].PuedeVer" value="false" />
+                                    <span class="badge @(Model[i].PuedeVer ? "bg-success" : "bg-secondary") ms-1">
+                                        @(Model[i].PuedeVer ? "ON" : "OFF")
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="permisos[@i].PuedeCrear" value="true"
+                                        @(Model[i].PuedeCrear ? "checked" : "")
+                                        class="form-check-input" />
+                                    <input type="hidden" name="permisos[@i].PuedeCrear" value="false" />
+                                    <span class="badge @(Model[i].PuedeCrear ? "bg-success" : "bg-secondary") ms-1">
+                                        @(Model[i].PuedeCrear ? "ON" : "OFF")
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="permisos[@i].PuedeEditar" value="true"
+                                        @(Model[i].PuedeEditar ? "checked" : "")
+                                        class="form-check-input" />
+                                    <input type="hidden" name="permisos[@i].PuedeEditar" value="false" />
+                                    <span class="badge @(Model[i].PuedeEditar ? "bg-success" : "bg-secondary") ms-1">
+                                        @(Model[i].PuedeEditar ? "ON" : "OFF")
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="permisos[@i].PuedeEliminar" value="true"
+                                        @(Model[i].PuedeEliminar ? "checked" : "")
+                                        class="form-check-input" />
+                                    <input type="hidden" name="permisos[@i].PuedeEliminar" value="false" />
+                                    <span class="badge @(Model[i].PuedeEliminar ? "bg-success" : "bg-secondary") ms-1">
+                                        @(Model[i].PuedeEliminar ? "ON" : "OFF")
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">&#9632; Volver</a>
+                <button type="submit" class="btn btn-success">&#128190; Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Actualizar badge ON/OFF al cambiar checkbox
+    document.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            var badge = this.nextElementSibling;
+            if (this.checked) {
+                badge.className = 'badge bg-success ms-1';
+                badge.textContent = 'ON';
+            } else {
+                badge.className = 'badge bg-secondary ms-1';
+                badge.textContent = 'OFF';
+            }
+        });
+    });
+</script>

@@ -1,54 +1,118 @@
-﻿@model IEnumerable<MoldeMVC_Core.Models.CatalogoMateria>
+@model IEnumerable<MoldeMVC_Core.Models.CatalogoMateria>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = User.IsInRole("ABOGADO") ? "Malla Curricular" : "Catálogo de Materias";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreMateria)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Carrera)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Departamento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nivel)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreMateria)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Carrera.CarreraId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Departamento.DepartamentoId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nivel.NivelId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MateriaId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MateriaId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MateriaId">Delete</a>
-            </td>
-        </tr>
+@if (User.IsInRole("ABOGADO"))
+{
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label><strong>Departamento</strong></label>
+            <select class="form-control" id="selectDepto" onchange="cargarCarreras()">
+                <option value="">-- Seleccione departamento --</option>
+                @foreach (var d in (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["Departamentos"])
+                {
+                    <option value="@d.Value">@d.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4" id="divCarrera" style="display:none">
+            <label><strong>Carrera</strong></label>
+            <form method="get" asp-action="Index">
+                <select name="carreraId" class="form-control" id="selectCarrera" onchange="this.form.submit()">
+                    <option value="">-- Seleccione carrera --</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    @if (ViewData["JsonOriginal"] != null)
+    {
+        <div class="alert alert-secondary mt-3">
+            <strong>Objeto deserializado (JSON):</strong>
+            <pre style="max-height:300px; overflow-y:auto; font-size:0.8rem; margin-top:0.5rem;">@ViewData["JsonOriginal"]</pre>
+        </div>
+
+        @foreach (var grupo in Model.GroupBy(m => m.Nivel != null ? m.Nivel.NivelDescrip : "Sin nivel"))
+        {
+            <h4 class="mt-4">Nivel: @grupo.Key</h4>
+            <table class="table table-bordered table-sm">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Materia</th>
+                        <th>Carrera</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in grupo)
+                    {
+                        <tr>
+                            <td>@item.NombreMateria</td>
+                            <td>@item.Carrera?.NombreCarrera</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
 }
-    </tbody>
-</table>
+else
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Agregar Materia</a>
+    </p>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre Materia</th>
+                <th>Carrera</th>
+                <th>Departamento</th>
+                <th>Nivel</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NombreMateria</td>
+                    <td>@item.Carrera?.NombreCarrera</td>
+                    <td>@item.Departamento?.NombreDepartamento</td>
+                    <td>@item.Nivel?.NivelDescrip</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.MateriaId" class="btn btn-sm btn-warning">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.MateriaId" class="btn btn-sm btn-info">Detalles</a> |
+                        <a asp-action="Delete" asp-route-id="@item.MateriaId" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    @if (User.IsInRole("ABOGADO"))
+    {
+        <script>
+            function cargarCarreras() {
+                var deptoId = document.getElementById('selectDepto').value;
+                if (!deptoId) return;
+                fetch('/CatalogoMaterias/GetCarrerasByDepto?deptoId=' + deptoId)
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        var sel = document.getElementById('selectCarrera');
+                        sel.innerHTML = '<option value="">-- Seleccione carrera --</option>';
+                        data.forEach(function (c) {
+                            sel.innerHTML += '<option value="' + c.carreraId + '">' + c.nombreCarrera + '</option>';
+                        });
+                        document.getElementById('divCarrera').style.display = 'block';
+                    });
+            }
+        </script>
+    }
+}

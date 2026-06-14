@@ -1,42 +1,54 @@
-﻿@model IEnumerable<MoldeMVC_Core.Models.NrcMaterium>
+@model IEnumerable<MoldeMVC_Core.Models.NrcMaterium>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = User.IsInRole("PROFESOR") ? "Mis Materias" : "NRC Materias";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-warning">@ViewBag.Mensaje</div>
+}
+
+@if (ViewBag.PuedeCrear == true)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Agregar NRC</a>
+    </p>
+}
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Materia)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Profesor)
-            </th>
-            <th></th>
+            <th>NRC</th>
+            <th>Materia</th>
+            <th>Profesor</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Materia.MateriaId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Profesor.ProfesorId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Nrc">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Nrc">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Nrc">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nrc</td>
+                <td>@item.Materia?.NombreMateria</td>
+                <td>@item.Profesor?.Personal?.NombrePersona @item.Profesor?.Personal?.ApellidoPersona</td>
+                <td>
+                    @if (ViewBag.PuedeEditar == true)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Nrc" class="btn btn-sm btn-warning">Editar</a>
+                        <span>|</span>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Nrc" class="btn btn-sm btn-info">Detalles</a>
+                    @if (ViewBag.PuedeEliminar == true)
+                    {
+                        <span>|</span>
+                        <a asp-action="Delete" asp-route-id="@item.Nrc" class="btn btn-sm btn-danger">Eliminar</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

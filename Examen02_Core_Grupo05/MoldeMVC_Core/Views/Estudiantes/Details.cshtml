@@ -1,37 +1,26 @@
-﻿@model MoldeMVC_Core.Models.Estudiante
+@model MoldeMVC_Core.Models.Estudiante
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle Estudiante";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Detalle Estudiante</h1>
 
 <div>
-    <h4>Estudiante</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Carrera)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Carrera.CarreraId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NivelActualEstNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NivelActualEstNavigation.NivelId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Personal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Personal.PersonalId)
-        </dd>
+        <dt class="col-sm-2">Nombre</dt>
+        <dd class="col-sm-10">@Model?.Personal?.NombrePersona @Model?.Personal?.ApellidoPersona</dd>
+
+        <dt class="col-sm-2">Carrera</dt>
+        <dd class="col-sm-10">@Model?.Carrera?.NombreCarrera</dd>
+
+        <dt class="col-sm-2">Nivel Actual</dt>
+        <dd class="col-sm-10">@Model?.NivelActualEstNavigation?.NivelDescrip</dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.EstudianteId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.EstudianteId">Editar</a> |
+    <a asp-action="Index">Volver</a>
 </div>

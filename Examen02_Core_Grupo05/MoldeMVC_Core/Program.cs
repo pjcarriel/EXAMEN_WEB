@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MoldeMVC_Core.Data;
+using MoldeMVC_Core.Models;
 using MoldeMVC_Core.Roles;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,18 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Registrar contexto del catálogo académico
+builder.Services.AddDbContext<CatalogoMateriaBdCoreContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CatalogoConnection")));
+
+// Sesiones
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+});
 
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 // .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -56,7 +69,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.Migrate(); // Aplica las migraciones pendientes
+        context.Database.Migrate(); // Aplica migraciones pendientes
     }
     catch (Exception ex)
     {
@@ -87,6 +100,8 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

@@ -11,16 +11,16 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-id="@Model.Nrc" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Nrc" />
             <div class="form-group">
-                <label asp-for="MateriaId" class="control-label"></label>
+                <label class="control-label">Materia</label>
                 <select asp-for="MateriaId" class="form-control" asp-items="ViewBag.MateriaId"></select>
                 <span asp-validation-for="MateriaId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProfesorId" class="control-label"></label>
+                <label class="control-label">Profesor</label>
                 <select asp-for="ProfesorId" class="form-control" asp-items="ViewBag.ProfesorId"></select>
                 <span asp-validation-for="ProfesorId" class="text-danger"></span>
             </div>

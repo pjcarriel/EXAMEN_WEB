@@ -47,7 +47,7 @@ namespace MoldeMVC_Core.Controllers
         // GET: Personas/Create
         public IActionResult Create()
         {
-            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolPersonaId");
+            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolNombre");
             return View();
         }
 
@@ -58,13 +58,17 @@ namespace MoldeMVC_Core.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PersonalId,CedulaPersona,RolPersonaId,NombrePersona,ApellidoPersona,Foto")] Persona persona)
         {
+            ModelState.Remove("RolPersona");
+            ModelState.Remove("Estudiantes");
+            ModelState.Remove("Profesors");
+
             if (ModelState.IsValid)
             {
                 _context.Add(persona);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolPersonaId", persona.RolPersonaId);
+            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolNombre", persona.RolPersonaId);
             return View(persona);
         }
 
@@ -81,7 +85,7 @@ namespace MoldeMVC_Core.Controllers
             {
                 return NotFound();
             }
-            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolPersonaId", persona.RolPersonaId);
+            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolNombre", persona.RolPersonaId);
             return View(persona);
         }
 
@@ -97,27 +101,24 @@ namespace MoldeMVC_Core.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove("RolPersona");
+            ModelState.Remove("Estudiantes");
+            ModelState.Remove("Profesors");
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(persona);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!PersonaExists(persona.PersonalId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", "Error al guardar: " + ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolPersonaId", persona.RolPersonaId);
+            ViewData["RolPersonaId"] = new SelectList(_context.Rolpersonas, "RolPersonaId", "RolNombre", persona.RolPersonaId);
             return View(persona);
         }
 

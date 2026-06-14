@@ -1,42 +1,93 @@
-﻿@model MoldeMVC_Core.Models.NrcMaterium
+@model MoldeMVC_Core.Models.NrcMaterium
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Periodo Académico — Asignar Materia";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>NrcMaterium</h4>
+<h1>Periodo Académico</h1>
+<h4>Asignar Materia a Profesor</h4>
 <hr />
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+@if (ViewBag.Exito != null)
+{
+    <div class="alert alert-success">@ViewBag.Exito</div>
+}
+
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-5">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nrc" class="control-label"></label>
-                <input asp-for="Nrc" class="form-control" />
+
+            <div class="form-group mb-3">
+                <label><strong>Departamento</strong></label>
+                <select class="form-control" id="selectDepto" onchange="cargarProfesoresYMaterias()">
+                    <option value="">-- Seleccione departamento --</option>
+                    @foreach (var d in (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["Departamentos"])
+                    {
+                        <option value="@d.Value">@d.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Nrc" class="control-label"><strong>NRC</strong></label>
+                <input asp-for="Nrc" class="form-control" placeholder="Código NRC único" />
                 <span asp-validation-for="Nrc" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="MateriaId" class="control-label"></label>
-                <select asp-for="MateriaId" class ="form-control" asp-items="ViewBag.MateriaId"></select>
+
+            <div class="form-group mb-3">
+                <label asp-for="ProfesorId" class="control-label"><strong>Profesor</strong></label>
+                <select asp-for="ProfesorId" class="form-control" id="selectProfesor">
+                    <option value="">-- Primero seleccione un departamento --</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="ProfesorId" class="control-label"></label>
-                <select asp-for="ProfesorId" class ="form-control" asp-items="ViewBag.ProfesorId"></select>
+
+            <div class="form-group mb-3">
+                <label asp-for="MateriaId" class="control-label"><strong>Materia</strong></label>
+                <select asp-for="MateriaId" class="form-control" id="selectMateria">
+                    <option value="">-- Primero seleccione un departamento --</option>
+                </select>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Asignar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary ms-2">Volver</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function cargarProfesoresYMaterias() {
+            var deptoId = document.getElementById('selectDepto').value;
+            if (!deptoId) return;
+
+            fetch('/NrcMateriums/GetProfesoresByDepto?deptoId=' + deptoId)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var sel = document.getElementById('selectProfesor');
+                    sel.innerHTML = '<option value="">-- Seleccione profesor --</option>';
+                    data.forEach(function (p) {
+                        sel.innerHTML += '<option value="' + p.profesorId + '">' + p.nombre + '</option>';
+                    });
+                });
+
+            fetch('/NrcMateriums/GetMateriasByDepto?deptoId=' + deptoId)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var sel = document.getElementById('selectMateria');
+                    sel.innerHTML = '<option value="">-- Seleccione materia --</option>';
+                    data.forEach(function (m) {
+                        sel.innerHTML += '<option value="' + m.materiaId + '">' + m.nombreMateria + '</option>';
+                    });
+                });
+        }
+    </script>
 }

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,9 +22,63 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
+                            @if (User.Identity?.Name == "Administrador")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="GestionPermisos" asp-action="Index">Gestión Permisos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Personas" asp-action="Index">Personas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Carreras" asp-action="Index">Carreras</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Departamentoes" asp-action="Index">Departamentos</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("DECANO"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Estudiantes" asp-action="Index">Estudiantes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Profesors" asp-action="Index">Profesores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="CatalogoMaterias" asp-action="Index">Catálogo Materias</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("PLANIFICADOR"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="NrcMateriums" asp-action="Index">NRC Materias</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Matriculas" asp-action="Index">Matrículas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="NrcMateriums" asp-action="Create">Periodo Académico</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("ABOGADO"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="CatalogoMaterias" asp-action="Index">Malla Curricular</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("PROFESOR"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="NrcMateriums" asp-action="Index">Mis Materias</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("ESTUDIANTE"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Matriculas" asp-action="Index">Mis Matrículas</a>
+                                </li>
+                            }
                         }
                         else
                         {

@@ -154,6 +154,18 @@ namespace MoldeMVC_Core.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // AJAX: carreras por departamento (para combos en Register)
+        public JsonResult GetCarrerasByDepartamento(int departamentoId)
+        {
+            var carreras = _context.CatalogoMaterias
+                .Where(c => c.DepartamentoId == departamentoId && c.Carrera != null)
+                .Select(c => c.Carrera!)
+                .Distinct()
+                .Select(c => new { c.CarreraId, c.NombreCarrera })
+                .ToList();
+            return Json(carreras);
+        }
+
         private bool CarreraExists(int id)
         {
           return (_context.Carreras?.Any(e => e.CarreraId == id)).GetValueOrDefault();
