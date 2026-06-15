@@ -20,7 +20,7 @@ namespace MoldeMVC_Core.Controllers
         }
 
         private bool TienePermiso(string modulo, string accion)
-            => User.HasClaim(c => c.Type == modulo + "." + accion && c.Value == "true");
+            => HttpContext.Session.GetString(modulo + "." + accion) == "true";
 
         [Authorize(Roles = "PLANIFICADOR,PROFESOR")]
         public async Task<IActionResult> Index()

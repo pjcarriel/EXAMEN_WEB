@@ -19,11 +19,15 @@ namespace MoldeMVC_Core.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
             _logger = logger;
         }
 
@@ -79,6 +83,22 @@ namespace MoldeMVC_Core.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    // Guardar permisos del rol en sesión
+                    var user = await _userManager.FindByNameAsync(Input.UserName);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    foreach (var rolNombre in roles)
+                    {
+                        var rol = await _roleManager.FindByNameAsync(rolNombre);
+                        if (rol != null)
+                        {
+                            var claims = await _roleManager.GetClaimsAsync(rol);
+                            foreach (var claim in claims)
+                                if (claim.Value == "true")
+                                    HttpContext.Session.SetString(claim.Type, "true");
+                        }
+                    }
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
